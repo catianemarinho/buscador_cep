@@ -1,6 +1,6 @@
 # Buscador de CEP com GUI
 <div align="center">
-  <img src="">
+  <img src="https://github.com/catianemarinho/buscador_cep/assets/97571709/95dd72f1-1a1a-44f9-9436-59242d71d581">
 </div>
 
 ## Visão Geral
