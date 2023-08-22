@@ -8,11 +8,31 @@ from pathlib import Path
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 import requests
+import re
 
-def search_cep(cep):
+def valid_cep(cep):
+    # Clear the entry field
+    entry_1.delete(0, 'end')
+
+    # Check if the CEP contains any alphabetic characters or is not 8 characters long
+    if re.search('[a-zA-Z]', cep) or len(cep) != 8:
+        # If the CEP is invalid, construct an error message and insert it into the entry field
+        error_message = f"O CEP '{cep}' não é válido"
+        return entry_1.insert(0, error_message)
+    else:
+        # If the CEP is valid, format it and search for its details
+        formatted_cep = f"{cep[:5]}-{cep[-3:]}"
+        serch_result = get_address_data(cep)
+        # Insert the formatted CEP into the entry field
+        entry_1.insert(0, formatted_cep)
+        # Return the search result
+        return serch_result
+
+def get_address_data(cep):
     url = f"https://viacep.com.br/ws/{cep}/json/"
     response =  requests.get(url).json()
     
+    # Update the text item in the canvas with the value from the response
     canvas.itemconfig(logradouro, text=response["logradouro"])
     canvas.itemconfig(uf, text=response["uf"])
     canvas.itemconfig(cidade, text=response["localidade"])
@@ -90,7 +110,7 @@ button_1 = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: search_cep(entry_1.get()),
+    command=lambda: valid_cep(entry_1.get()),
     relief="flat",
 )
 button_1.place(x=254.0, y=117.0, width=90.0, height=27.0)
@@ -152,7 +172,7 @@ canvas.create_text(
     font=("Poppins SemiBold", 12 * -1),
 )
 
-cidade = canvas.create_text(
+logradouro = canvas.create_text(
     59.0,
     255.0,
     anchor="nw",
@@ -161,7 +181,7 @@ cidade = canvas.create_text(
     font=("Poppins Regular", 11 * -1),
 )
 
-uf = canvas.create_text(
+cidade = canvas.create_text(
     59.0,
     331.0,
     anchor="nw",
@@ -170,7 +190,7 @@ uf = canvas.create_text(
     font=("Poppins Regular", 11 * -1),
 )
 
-ddd = canvas.create_text(
+bairro = canvas.create_text(
     305.0,
     254.0,
     anchor="nw",
@@ -179,7 +199,7 @@ ddd = canvas.create_text(
     font=("Poppins Regular", 11 * -1),
 )
 
-bairro = canvas.create_text(
+uf = canvas.create_text(
     306.0,
     331.0,
     anchor="nw",
@@ -188,7 +208,7 @@ bairro = canvas.create_text(
     font=("Poppins Regular", 11 * -1),
 )
 
-logradouro = canvas.create_text(
+ddd = canvas.create_text(
     412.0,
     337.0,
     anchor="nw",
